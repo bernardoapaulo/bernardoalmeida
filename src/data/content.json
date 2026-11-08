@@ -1,0 +1,296 @@
+{
+  "as_of": "2026-11-05",
+  "person": {
+    "name": "Bernardo Almeida",
+    "handle": "@bernardoapaulo",
+    "city": "Vitória, ES",
+    "age": 23
+  },
+  "instagram": {
+    "followers": 1879,
+    "views_30d": 117893,
+    "new_followers_30d": 130,
+    "interactions_30d": 3367,
+    "shares_30d": 112,
+    "saves_30d": 108,
+    "avg_post_engagement_pct": 11.1,
+    "engagement_definition": "interações ÷ alcance, média dos últimos 7 posts",
+    "best_reel_recent": {
+      "views": 19402,
+      "reach": 12365,
+      "shares": 31,
+      "saves": 59,
+      "likes": 691,
+      "comments": 15
+    },
+    "best_carousel_recent": {
+      "views": 6078,
+      "reach": 2759,
+      "profile_visits": 346,
+      "new_followers": 44,
+      "likes": 279,
+      "saves": 11,
+      "shares": 3
+    },
+    "audience": {
+      "country": {
+        "Brasil": 82.6,
+        "EUA": 3.6,
+        "Arábia Saudita": 1.5
+      },
+      "age_18_34_pct_approx": 75,
+      "cities": {
+        "Cariacica": 18.7,
+        "Vitória": 12.7,
+        "Vila Velha": 8.4,
+        "Serra": 6.3,
+        "São Paulo": 3.4
+      }
+    }
+  },
+  "tiktok": {
+    "show": true,
+    "followers": 6364,
+    "views_30d": 18200,
+    "audience": {
+      "country": {
+        "Brasil": 68.1,
+        "EUA": 3,
+        "Argentina": 1.9
+      },
+      "cities": {
+        "São Paulo": 6.8,
+        "Rio de Janeiro": 4.9,
+        "Belo Horizonte": 2.5,
+        "Brasília": 2,
+        "Salvador": 1.9
+      }
+    },
+    "note": "Seguidores e views informados por Bernardo em 05/11/2026 (TikTok)."
+  },
+  "contact": {
+    "email": "bernardo-a@live.com",
+    "whatsapp": "5527995000958",
+    "public_phone_ok": true,
+    "instagram": "bernardoapaulo",
+    "tiktok": "bernardoapaulo"
+  },
+  "copy": {
+    "seo": {
+      "title": "Bernardo Almeida (@bernardoapaulo) | Creator de viagem, moda e lifestyle",
+      "description": "Creator de Vitória-ES. Foto, vídeo e dados na mesma pessoa. Portfólio para parcerias de permuta com marcas de viagem, moda e lifestyle."
+    },
+    "hero": {
+      "badge": "Aberto a parcerias",
+      "subtitle": "Creator de viagem, moda e lifestyle. Foto, vídeo e dados na mesma pessoa.",
+      "cta_primary": "Vamos criar juntos",
+      "cta_secondary": "Ver trabalhos",
+      "marquee": [
+        "Viagens",
+        "Moda",
+        "Restaurantes",
+        "GRWM",
+        "Gym",
+        "UGC"
+      ]
+    },
+    "numbers": {
+      "eyebrow": "Números",
+      "title": "Alcance que dá para <em>conferir</em>.",
+      "total_label": "seguidores entre Instagram e TikTok",
+      "instagram_label": "Instagram",
+      "instagram_source": "Instagram, API oficial, dados de {date}",
+      "tiktok_label": "TikTok",
+      "tiktok_source": "TikTok, dados informados pelo criador em {date}",
+      "cards": [
+        {
+          "key": "followers",
+          "label": "Seguidores no Instagram",
+          "format": "int"
+        },
+        {
+          "key": "views_30d",
+          "label": "Visualizações nos últimos 30 dias",
+          "format": "int"
+        },
+        {
+          "key": "new_followers_30d",
+          "label": "Novos seguidores em 30 dias",
+          "format": "int",
+          "prefix": "+"
+        },
+        {
+          "key": "avg_post_engagement_pct",
+          "label": "Engajamento médio por post",
+          "format": "pct"
+        }
+      ],
+      "audience_title": "Quem assiste",
+      "audience_age": "têm entre 18 e 34 anos (aprox.)"
+    },
+    "about": {
+      "eyebrow": "Sobre",
+      "text": "Sou o Bernardo, tenho 23 anos e moro em Vitória, ES. Crio conteúdo de viagem, moda, lifestyle e treino, com foto, vídeo e design feitos por mim. Fundei a BAZC e estudo Análise de Dados, então cada post nasce com olhar de marca e termina com número na mão.",
+      "chips": [
+        "Fotógrafo",
+        "Designer gráfico",
+        "Estudante de Análise de Dados",
+        "Vitória, ES"
+      ]
+    },
+    "pillars": {
+      "eyebrow": "Conteúdo",
+      "title": "Cinco frentes, <em>um olhar</em>.",
+      "items": [
+        {
+          "id": "viagens",
+          "name": "Viagens",
+          "formats": [
+            "Vlog",
+            "Roteiro"
+          ],
+          "video": "video/pillar-viagens.mp4",
+          "photo": "photos/pillar-viagens"
+        },
+        {
+          "id": "moda",
+          "name": "Moda",
+          "formats": [
+            "Provador",
+            "Outfit"
+          ],
+          "video": "video/pillar-moda.mp4",
+          "photo": "photos/pillar-moda"
+        },
+        {
+          "id": "restaurante",
+          "name": "Restaurante",
+          "formats": [
+            "Experiência",
+            "Review"
+          ],
+          "video": "video/pillar-restaurante.mp4",
+          "photo": "photos/pillar-restaurante"
+        },
+        {
+          "id": "grwm",
+          "name": "GRWM",
+          "formats": [
+            "Get ready with me",
+            "Outfit"
+          ],
+          "video": "video/pillar-grwm.mp4",
+          "photo": "photos/pillar-grwm"
+        },
+        {
+          "id": "gym",
+          "name": "Gym",
+          "formats": [
+            "Treino",
+            "Rotina"
+          ],
+          "video": "video/pillar-gym.mp4",
+          "photo": "photos/pillar-gym"
+        }
+      ]
+    },
+    "works": {
+      "eyebrow": "Trabalhos selecionados",
+      "title": "O que já foi <em>feito</em>.",
+      "items": [
+        {
+          "id": "bazc",
+          "name": "BAZC",
+          "tag": "Marca própria",
+          "format": "Unboxing",
+          "video": "video/work-bazc.mp4",
+          "poster": "photos/work-bazc",
+          "result": null,
+          "ratio": "1/1"
+        },
+        {
+          "id": "olv",
+          "name": "OLV Sunglasses",
+          "tag": "Parceria",
+          "format": "Ensaio de produto",
+          "video": "video/work-olv.mp4",
+          "poster": "photos/work-olv",
+          "photos": [
+            "photos/work-olv",
+            "photos/work-olv-2"
+          ],
+          "result": null
+        },
+        {
+          "id": "capetown",
+          "name": "Top Posts",
+          "tag": "Melhores resultados",
+          "format": "Reels, carrosséis e stories",
+          "results_note": "Métricas de outros posts do perfil, do Instagram Insights.",
+          "video": null,
+          "poster": null,
+          "result": "capetown"
+        }
+      ]
+    },
+    "why": {
+      "eyebrow": "Por que comigo",
+      "title": "Menos <em>intermediário</em>, mais resultado.",
+      "items": [
+        {
+          "n": "01",
+          "title": "Tudo em um",
+          "text": "Foto, vídeo, design e edição com a mesma pessoa. Menos ruído, mais consistência."
+        },
+        {
+          "n": "02",
+          "title": "Mede o que entrega",
+          "text": "Relatório simples de resultados ao fim de cada campanha. Sem enrolação."
+        },
+        {
+          "n": "03",
+          "title": "Audiência regional e nacional",
+          "text": "Grande Vitória no dia a dia, Brasil inteiro no alcance."
+        },
+        {
+          "n": "04",
+          "title": "Entrega organizada",
+          "text": "Briefing, prazos e arquivos combinados antes, entregues como combinado."
+        }
+      ]
+    },
+    "steps": {
+      "eyebrow": "Como funciona",
+      "title": "Do briefing ao <em>relatório</em>.",
+      "items": [
+        {
+          "n": 1,
+          "title": "Briefing",
+          "text": "Conversamos sobre objetivo, público e escopo."
+        },
+        {
+          "n": 2,
+          "title": "Produto chega",
+          "text": "Você envia o produto ou define a experiência."
+        },
+        {
+          "n": 3,
+          "title": "Criação",
+          "text": "Eu fotografo, gravo e edito."
+        },
+        {
+          "n": 4,
+          "title": "Entrega e relatório",
+          "text": "Arquivos organizados e resultados medidos."
+        }
+      ],
+      "note": "Formato: permuta. Produto ou experiência em troca de conteúdo."
+    },
+    "contact": {
+      "title": "Bora criar algo <em>juntos</em>?",
+      "email_copy": "Copiar e-mail",
+      "email_copied": "Copiado!",
+      "thanks": "Obrigado pela visita"
+    }
+  }
+}

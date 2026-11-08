@@ -1,0 +1,12 @@
+import { chromium } from 'playwright';
+const b = await chromium.launch({ channel: 'msedge' });
+const p = await (await b.newContext({ viewport: { width: 1440, height: 900 } })).newPage();
+await p.goto('http://localhost:4173/', { waitUntil: 'networkidle' }); await p.waitForTimeout(800);
+const top = await p.evaluate(() => document.querySelector('.pillars').getBoundingClientRect().top + scrollY);
+await p.evaluate((y) => scrollTo(0, y + 5), top); await p.waitForTimeout(1200);
+const x = () => p.evaluate(() => Math.round(new DOMMatrix(getComputedStyle(document.querySelector('.pillars__track')).transform).m41) + ' y' + Math.round(scrollY));
+console.log(await x());
+await p.click('.pillars__nav--next'); await p.waitForTimeout(1500); console.log('next', await x()); await p.click('.pillars__nav--prev'); await p.waitForTimeout(1500); console.log('prev', await x()); await p.click('.pillars__nav--next'); await p.waitForTimeout(1500); console.log('next again', await x()); await p.focus('.pillars__viewport'); console.log(await p.evaluate(() => document.activeElement.className));
+await p.keyboard.press('ArrowRight'); await p.waitForTimeout(1500); console.log('→', await x());
+await p.keyboard.press('ArrowLeft'); await p.waitForTimeout(1500); console.log('←', await x());
+await b.close();
