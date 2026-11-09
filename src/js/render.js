@@ -37,7 +37,7 @@ export function media({ base, ratio = '4/5', label, alt = '', cls = '', eager = 
 export function video({ file, poster, ratio = '9/16', label, alt = '', cls = '' }) {
   const posterFile = poster ? findImage(poster) : null;
   if (!has(file)) return media({ base: poster || file, ratio, label, alt, cls });
-  return `<div class="media ${cls}" style="aspect-ratio:${ratio}"><video src="${url(file)}" ${posterFile ? `poster="${url(posterFile)}"` : ''} muted loop playsinline preload="metadata" aria-label="${esc(alt)}" data-autoplay></video></div>`;
+  return `<div class="media ${cls}" style="aspect-ratio:${ratio}"><video src="${url(file)}" ${posterFile ? `poster="${url(posterFile)}"` : ''} muted loop playsinline webkit-playsinline disablepictureinpicture controlslist="nodownload noplaybackrate" preload="metadata" aria-label="${esc(alt)}" data-autoplay></video></div>`;
 }
 
 export function mascot(variant = 'jaqueta') {
@@ -188,7 +188,7 @@ export function render() {
         ${p.items
           .map(
             (it) => `<article class="pillar" data-tilt>
-          <div class="phone">${video({ file: it.video, poster: it.photo, ratio: '9/16', label: `${it.name} · ${it.video}`, alt: `Exemplo de conteúdo de ${it.name}` })}</div>
+          <div class="phone">${video({ file: it.video, poster: it.photo, ratio: '9/16', label: `${it.name} · ${it.video}`, alt: `Exemplo de conteúdo de ${it.name}` })}<button class="pillar__play" type="button" hidden aria-label="Reproduzir vídeo de ${esc(it.name)}">▶</button><button class="pillar__pause" type="button" aria-label="Pausar vídeo de ${esc(it.name)}" aria-pressed="false">⏸</button></div>
           <h3 class="pillar__name">${esc(it.name)}</h3>
           <ul class="pillar__formats">${it.formats.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>
         </article>`

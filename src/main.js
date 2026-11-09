@@ -197,20 +197,47 @@ const pillarCards = $$('.pillar');
 const pillarVideos = pillarCards.map((c) => $('video', c));
 let hovered = -1;
 let pinST = null;
-const wantPlay = new WeakMap();
+const wantPlay = new WeakMap(); // true = deve tocar
+const userPaused = new WeakMap(); // pausado pelo botão ⏸ (respeitado)
+const blocked = new WeakMap(); // autoplay bloqueado pelo sistema
+const nearLoaded = new WeakMap();
+const cardOf = (v) => v.closest('.pillar');
+const vpW = () => (window.visualViewport && window.visualViewport.width) || innerWidth;
+const showPlayBtn = (v, on) => {
+  const b = $('.pillar__play', cardOf(v));
+  if (b) b.hidden = !on;
+};
+const syncPauseBtn = (v) => {
+  const b = $('.pillar__pause', cardOf(v));
+  if (!b) return;
+  const paused = !!userPaused.get(v);
+  b.textContent = paused ? '▶' : '⏸';
+  b.setAttribute('aria-pressed', String(paused));
+  b.setAttribute('aria-label', (paused ? 'Reproduzir' : 'Pausar') + ' vídeo de ' + $('.pillar__name', cardOf(v)).textContent);
+};
 const tryPlay = (v) => {
+  if (userPaused.get(v)) return;
   wantPlay.set(v, true);
+  if (!v.paused || blocked.get(v)) return; // já toca, ou bloqueado: espera gesto/botão ▶
   v.muted = true;
   v.defaultMuted = true;
   v.playsInline = true;
   v.removeAttribute('autoplay');
   if (v.preload !== 'auto') v.preload = 'auto';
   const p = v.play();
-  p &&
-    p.catch((e) => {
-      if (e && e.name === 'NotAllowedError') return;
-      // AbortError (load/pausa no meio): tenta de novo quando puder tocar
-      v.addEventListener('canplay', () => wantPlay.get(v) && v.play().catch(() => {}), { once: true });
+  if (p && p.then)
+    p.then(() => {
+      blocked.set(v, false);
+      showPlayBtn(v, false);
+    }).catch((e) => {
+      if (e && e.name === 'AbortError') {
+        // load/pausa no meio: tenta de novo quando puder tocar
+        v.addEventListener('canplay', () => wantPlay.get(v) && v.play().catch(() => {}), { once: true });
+      } else {
+        // NotAllowedError (economia de energia, data saver): botão ▶ sobre o card
+        blocked.set(v, true);
+        showPlayBtn(v, true);
+      }
     });
 };
 const tryPause = (v) => {
@@ -221,66 +248,100 @@ const tryPause = (v) => {
 pillarVideos.forEach((v) => {
   if (!v) return;
   v.muted = true;
+  v.defaultMuted = true;
   v.addEventListener('error', () => {
     if (v.poster) v.parentElement.style.background = `center / cover no-repeat url("${v.poster}")`;
     v.style.visibility = 'hidden';
   });
+  // botões ▶ (bloqueio do sistema) e ⏸ (menos movimento)
+  const play = $('.pillar__play', cardOf(v));
+  const pause = $('.pillar__pause', cardOf(v));
+  play &&
+    play.addEventListener('click', () => {
+      userPaused.set(v, false);
+      syncPauseBtn(v);
+      v.muted = true;
+      v.play().then(() => (showPlayBtn(v, false), blocked.set(v, false))).catch(() => {});
+      wantPlay.set(v, true);
+    });
+  pause &&
+    pause.addEventListener('click', () => {
+      const next = !userPaused.get(v);
+      userPaused.set(v, next);
+      syncPauseBtn(v);
+      if (next) tryPause(v);
+      else tryPlay(v);
+    });
+  syncPauseBtn(v);
 });
 const visFrac = (el) => {
   const r = el.getBoundingClientRect();
   if (!r.width) return 0;
-  return Math.max(0, Math.min(r.right, innerWidth) - Math.max(r.left, 0)) / r.width;
+  return Math.max(0, Math.min(r.right, vpW()) - Math.max(r.left, 0)) / r.width;
 };
 let nearest = -1;
-// regra: todo vídeo com ≥ 50% da largura visível toca; o card sob o mouse sempre toca
+// regra: todo vídeo com ≥ 50% da largura visível toca (mesmo com reduced-motion); o card sob o mouse sempre toca
 const syncPillars = () => {
   let best = -1, bd = Infinity;
-  const cx = innerWidth / 2;
+  const W = vpW();
   pillarCards.forEach((c, k) => {
-    const vis = visFrac(c);
+    const r = c.getBoundingClientRect();
+    const vis = r.width ? Math.max(0, Math.min(r.right, W) - Math.max(r.left, 0)) / r.width : 0;
     const v = pillarVideos[k];
     if (vis > 0) {
-      const r = c.getBoundingClientRect();
-      const d = Math.abs(r.left + r.width / 2 - cx);
+      const d = Math.abs(r.left + r.width / 2 - W / 2);
       if (d < bd) ((bd = d), (best = k));
     }
     if (!v) return;
-    if (vis >= 0.5 || k === hovered) tryPlay(v);
-    else {
-      tryPause(v);
-      if (vis > 0 && v.preload !== 'auto') v.preload = 'auto';
+    // a ≤ 1 tela de distância: carrega uma vez (load) antes do play
+    if (!nearLoaded.get(v) && r.right > -W && r.left < W * 2) {
+      nearLoaded.set(v, true);
+      v.preload = 'auto';
+      if (v.readyState < 2) v.load();
     }
+    if (vis >= 0.5 || k === hovered) tryPlay(v);
+    else tryPause(v);
   });
-  if (best !== nearest) {
+  if (best !== nearest && !RM) {
     nearest = best;
     pillarCards.forEach((c, k) => c.classList.toggle('is-active', k === best));
   }
 };
-if (RM) {
-  pillarCards.forEach((c) => c.classList.add('is-active'));
-  // sem autoplay: poster visível; clique reproduz
-  pillarVideos.forEach((v) => {
-    if (!v) return;
-    v.parentElement.style.cursor = 'pointer';
-    v.parentElement.addEventListener('click', () => (v.paused ? ((v.muted = true), v.play().catch(() => {})) : v.pause()));
-  });
-} else {
-  let near = false;
+let nearSec = false;
+{
   const sec0 = $('.pillars');
+  if (RM) pillarCards.forEach((c) => c.classList.add('is-active'));
   ScrollTrigger.create({
     trigger: sec0,
     start: 'top bottom+=200',
     end: 'bottom top-=200',
     onToggle: (s) => {
-      near = s.isActive;
-      if (!near) pillarVideos.forEach((v) => v && tryPause(v));
+      nearSec = s.isActive;
+      if (nearSec) syncPillars();
+      else pillarVideos.forEach((v) => v && tryPause(v));
     },
   });
-  gsap.ticker.add(() => near && syncPillars());
+  // a cada frame: cobre scrub, x manual, toque horizontal e rolagem nativa
+  gsap.ticker.add(() => nearSec && syncPillars());
   pillarCards.forEach((c, k) => {
     c.addEventListener('mouseenter', () => (hovered = k));
     c.addEventListener('mouseleave', () => hovered === k && (hovered = -1));
   });
+  const resync = () => nearSec && syncPillars();
+  addEventListener('resize', resync);
+  addEventListener('orientationchange', () => setTimeout(resync, 250));
+  // voltar para a aba: retoma os visíveis
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') nearSec && syncPillars();
+    else pillarVideos.forEach((v) => v && v.pause());
+  });
+  // primeiro gesto do usuário: destrava autoplay bloqueado
+  const unlock = () => {
+    pillarVideos.forEach((v) => v && blocked.get(v) && (blocked.set(v, false), wantPlay.get(v) && tryPlay(v)));
+    nearSec && syncPillars();
+  };
+  addEventListener('pointerdown', unlock, { once: true, passive: true });
+  addEventListener('touchstart', unlock, { once: true, passive: true });
 }
 
 const mm = gsap.matchMedia();
