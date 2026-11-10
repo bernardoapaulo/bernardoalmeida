@@ -10,7 +10,7 @@ npm run build          # gera dist/
 npm run preview        # serve o dist/
 npm run check-assets   # lista slots de imagem/vídeo pendentes
 npm run optimize       # gera WebP 800w/1600w das fotos (srcset)
-npm run og             # regenera assets/og.png (1200x630)
+npm run og             # regenera assets/og-v2.png (1200x630)
 ```
 
 ## Conteúdo
@@ -26,4 +26,4 @@ PNGs do mascote: `assets/lego/lego-jaqueta.png` e `lego-camisa.png`; originais e
 ## Deploy
 - **Vercel / Netlify:** build `npm run build`, pasta de saída `dist`.
 - **GitHub Pages:** publique o conteúdo de `dist/` (o site usa caminhos relativos).
-- Para o preview de link (Open Graph) funcionar, troque `./og.png` por URL absoluta no `index.html` após definir o domínio.
+- Preview de link (Open Graph): `index.html` usa URL absoluta `https://bernardoalmeida.vercel.app/og-v2.png`.

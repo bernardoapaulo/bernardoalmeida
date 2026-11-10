@@ -1,25 +1,37 @@
-// Gera assets/og.png (1200x630) com o nome e o boneco, usando Playwright.
+// Gera assets/og-v2.png (1200x630) no visual do site: preto, Inter Tight, foto do hero em P&B à direita.
 import { chromium } from 'playwright';
-const html = `<html><body style="margin:0;width:1200px;height:630px;background:#0E1A2F;color:#F3EEE4;font-family:Georgia,serif;position:relative;overflow:hidden">
-<div style="position:absolute;right:-120px;top:-160px;width:560px;height:560px;border-radius:50%;background:#C4623B;opacity:.9"></div>
-<div style="position:absolute;right:120px;bottom:-40px;width:330px;height:500px;border-radius:999px 999px 0 0;background:#E3A857;opacity:.25"></div>
-<div style="position:absolute;left:80px;top:90px;font:600 22px/1 Arial;letter-spacing:.16em;color:#E3A857">CREATOR · VIAGEM · MODA · LIFESTYLE</div>
-<div style="position:absolute;left:80px;top:170px;font-size:150px;line-height:.92;letter-spacing:-4px;font-weight:300">Bernardo<br><i style="color:#E3A857">Almeida</i></div>
-<div style="position:absolute;left:84px;bottom:70px;font:500 30px Arial">@bernardoapaulo · Vitória, ES</div>
-<svg style="position:absolute;right:230px;bottom:60px" width="180" height="312" viewBox="0 0 60 104">
-<rect x="14" y="68" width="14" height="32" rx="3" fill="#0E1A2F"/><rect x="12" y="96" width="18" height="7" rx="3" fill="#F3EEE4"/>
-<rect x="32" y="68" width="14" height="32" rx="3" fill="#0E1A2F"/><rect x="30" y="96" width="18" height="7" rx="3" fill="#F3EEE4"/>
-<rect x="12" y="62" width="36" height="12" rx="3" fill="#13233f"/>
-<rect x="3" y="34" width="10" height="28" rx="4" fill="#C4623B"/><circle cx="8" cy="64" r="5" fill="#F2C94C"/>
-<rect x="47" y="34" width="10" height="28" rx="4" fill="#C4623B"/><circle cx="52" cy="64" r="5" fill="#F2C94C"/>
-<rect x="12" y="32" width="36" height="34" rx="5" fill="#C4623B"/><rect x="25" y="26" width="10" height="8" fill="#F2C94C"/>
-<rect x="16" y="3" width="28" height="26" rx="7" fill="#F2C94C"/><rect x="24" y="0" width="12" height="5" rx="2" fill="#F2C94C"/>
-<path d="M16 12c2-9 26-9 28 0-8-3-20-3-28 0z" fill="#3a2a1d"/><circle cx="24" cy="18" r="1.8" fill="#0E1A2F"/><circle cx="36" cy="18" r="1.8" fill="#0E1A2F"/>
-<path d="M24 23c3 3 9 3 12 0" stroke="#0E1A2F" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
-</body></html>`;
+import sharp from 'sharp';
+import fs from 'node:fs';
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+const U = (f) => pathToFileURL(path.resolve(f)).href;
+const font = 'data:font/woff2;base64,' + fs.readFileSync('node_modules/@fontsource-variable/inter-tight/files/inter-tight-latin-wght-normal.woff2').toString('base64');
+const photo = U('assets/photos/hero.jpg');
+const html = `<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:'IT';src:url('${font}') format('woff2');font-weight:100 900}
+*{box-sizing:border-box;margin:0}
+body{width:1200px;height:630px;background:#0d0d0d;color:#f2f1ed;font-family:'IT',sans-serif;position:relative;overflow:hidden}
+.ph{position:absolute;right:0;top:0;width:520px;height:630px;background:url('${photo}') 50% 14%/cover;filter:grayscale(1) contrast(1.05)}
+.fade{position:absolute;right:0;top:0;width:520px;height:630px;background:linear-gradient(90deg,#0d0d0d 0%,rgba(13,13,13,.6) 22%,rgba(13,13,13,0) 55%)}
+.t{position:absolute;left:60px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;gap:0}
+.eb{font-weight:600;font-size:21px;letter-spacing:.28em;text-transform:uppercase;color:#a9a9a4;margin-bottom:26px}
+h1{font-weight:800;text-transform:uppercase;font-size:134px;line-height:.9;letter-spacing:-.045em}
+h1 span{display:block;color:#0d0d0d;-webkit-text-stroke:5px #f2f1ed;paint-order:stroke fill}
+.sub{margin-top:40px;font-weight:500;font-size:31px;letter-spacing:-.01em}
+.loc{margin-top:8px;font-weight:500;font-size:22px;letter-spacing:.14em;text-transform:uppercase;color:#a9a9a4}
+</style></head><body><div class="ph"></div><div class="fade"></div>
+<div class="t"><div class="eb">Portfólio · Parcerias</div><h1>Bernardo<span>Almeida</span></h1>
+<div class="sub">Creator de viagem, moda e lifestyle</div><div class="loc">Vitória, ES · @bernardoapaulo</div></div></body></html>`;
+const tmp = path.resolve('scripts/_og.html');
+fs.writeFileSync(tmp, html);
 const b = await chromium.launch();
-const p = await b.newPage({ viewport: { width: 1200, height: 630 } });
-await p.setContent(html);
-await p.screenshot({ path: 'assets/og.png' });
+const p = await b.newPage({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1 });
+await p.goto(U(tmp));
+await p.evaluate(() => document.fonts.load("800 20px IT").then(() => document.fonts.load("500 20px IT"))); console.log('font ok:', await p.evaluate(() => document.fonts.check("800 20px IT")), font.length);
+await p.waitForTimeout(400);
+const raw = await p.screenshot();
 await b.close();
-console.log('assets/og.png gerado');
+fs.rmSync(tmp);
+const out = await sharp(raw).png({ palette: true, colors: 160, quality: 85, compressionLevel: 9, effort: 10 }).toBuffer();
+fs.writeFileSync('assets/og-v2.png', out);
+console.log('assets/og-v2.png', (out.length / 1024).toFixed(0) + 'KB');
